@@ -4,9 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>alritealready — prototype</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;800;900&family=Big+Shoulders+Display:wght@100;300&display=swap">
+<link rel="preload" href="fonts/libre-franklin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/big-shoulders-display-300.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* self-hosted — no third-party request, no wait on Google's servers */
+  @font-face {
+    font-family: 'Libre Franklin';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('fonts/libre-franklin.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Big Shoulders Display';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url('fonts/big-shoulders-display-300.woff2') format('woff2');
+  }
+
   :root { --accent: #E0311D; }
   html, body { margin: 0; height: 100%; overflow: hidden; background: #EDEAE3; }
   * { box-sizing: border-box; }
@@ -30,7 +46,7 @@
   .about {
     position: absolute;
     color: rgba(22,19,15,0.8);
-    font-family: 'Big Shoulders Display', sans-serif;
+    font-family: 'Big Shoulders Display', -apple-system, 'Segoe UI', system-ui, sans-serif;
     font-weight: 300;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -399,6 +415,7 @@
 
     var rawPos = 0;      // pure accumulator, moves either direction — never snaps or resets
     var displayPos = 0;  // smoothed position actually rendered
+    var introShiftX = 0; // vw — entrance animation offset, folded into wordA below; 0 once settled
 
     // click-to-go-live zone: within ACTIVE_STEPS clicks of a word being fully settled,
     // the cursor becomes a pointer and clicking opens that word's link — and disables
@@ -417,7 +434,7 @@
       var frac = pos - base;
       wordA.textContent = words[mod(base, words.length)];
       wordB.textContent = words[mod(base + 1, words.length)];
-      wordA.style.transform = 'translateY(-50%) translateX(' + (-frac * EXIT_TRAVEL) + 'vw)';
+      wordA.style.transform = 'translateY(-50%) translateX(' + (introShiftX - frac * EXIT_TRAVEL) + 'vw)';
       wordA.style.opacity = 1 - frac;
       wordB.style.transform = 'translateY(-50%) translateX(' + ((1 - frac) * ENTER_TRAVEL) + 'vw)';
       wordB.style.opacity = frac;
@@ -573,6 +590,41 @@
 
     render(displayPos);
     requestAnimationFrame(frame);
+
+    // entrance: ALRITE slides in fading from the left, ALREADY! from the right,
+    // meeting where they abut — folds into the normal render loop via introShiftX
+    // (for wordA) rather than fighting it, and animates suffixEl directly since
+    // render() never touches its transform otherwise
+    (function playIntro() {
+      var DUR = 1100;
+      introShiftX = -70;
+      wordA.style.opacity = 0;
+      suffixEl.style.opacity = 0;
+      suffixEl.style.transform = 'translateY(-50%) translateX(70vw)';
+      render(displayPos);
+
+      var start = null;
+      function step(ts) {
+        if (start === null) start = ts;
+        var t = Math.min(1, (ts - start) / DUR);
+        var eased = 1 - Math.pow(1 - t, 3);
+        introShiftX = -70 * (1 - eased);
+        wordA.style.opacity = eased;
+        suffixEl.style.opacity = eased;
+        suffixEl.style.transform = 'translateY(-50%) translateX(' + (70 * (1 - eased)) + 'vw)';
+        render(displayPos);
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          introShiftX = 0;
+          wordA.style.opacity = '';
+          suffixEl.style.opacity = '';
+          suffixEl.style.transform = 'translateY(-50%)';
+          render(displayPos);
+        }
+      }
+      requestAnimationFrame(step);
+    })();
 
     function onWheel(e) {
       if (aboutOpen) return;
@@ -785,6 +837,7 @@
     var displayPos = 0;
     var mCameraFlashed = false;
     var mCameraSplitFlashed = false;
+    var mIntroShiftY = 0; // px — entrance offset folded into prefixA below; 0 once settled
 
     function mod(n, m) { return ((n % m) + m) % m; }
 
@@ -814,7 +867,7 @@
 
       prefixA.innerHTML = lettersHtml(words[mod(base, words.length)], 'var(--accent)');
       prefixB.innerHTML = lettersHtml(words[mod(base + 1, words.length)], 'var(--accent)');
-      prefixA.style.transform = 'translateY(' + (-frac * EXIT_Y) + 'px)';
+      prefixA.style.transform = 'translateY(' + (mIntroShiftY - frac * EXIT_Y) + 'px)';
       prefixA.style.opacity = 1 - frac;
       prefixB.style.transform = 'translateY(' + ((1 - frac) * ENTER_Y) + 'px)';
       prefixB.style.opacity = frac;
@@ -883,6 +936,42 @@
 
     fit();
     requestAnimationFrame(frame);
+
+    // entrance: ALRITE flows in top-down (from above), ALREADY! flows in bottom-up
+    // (from below), meeting where they abut — mirrors the desktop left/right intro,
+    // rotated to vertical. prefixA uses mIntroShiftY folded into the normal render
+    // loop; suffixEl is animated directly since render() never sets its transform.
+    (function playIntro() {
+      var DUR = 1100;
+      var travel = Math.min(window.innerHeight * 0.5, 420);
+      mIntroShiftY = -travel;
+      prefixA.style.opacity = 0;
+      suffixEl.style.opacity = 0;
+      suffixEl.style.transform = 'translateY(' + travel + 'px)';
+      render(displayPos);
+
+      var start = null;
+      function step(ts) {
+        if (start === null) start = ts;
+        var t = Math.min(1, (ts - start) / DUR);
+        var eased = 1 - Math.pow(1 - t, 3);
+        mIntroShiftY = -travel * (1 - eased);
+        prefixA.style.opacity = eased;
+        suffixEl.style.opacity = eased;
+        suffixEl.style.transform = 'translateY(' + (travel * (1 - eased)) + 'px)';
+        render(displayPos);
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          mIntroShiftY = 0;
+          prefixA.style.opacity = '';
+          suffixEl.style.opacity = '';
+          suffixEl.style.transform = '';
+          render(displayPos);
+        }
+      }
+      requestAnimationFrame(step);
+    })();
 
     var resizeTimer;
     window.addEventListener('resize', function () {
