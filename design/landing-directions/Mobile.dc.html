@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@800;900&family=Big+Shoulders+Display:wght@100;300&display=swap">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    .aa-m-letter { font-family: 'Libre Franklin', sans-serif; font-weight: 900; font-size: 44px; line-height: 50px; height: 50px; text-align: center; }
+  </style>
+</helmet>
+<div style="width:390px;height:844px;position:relative;overflow:hidden;background:#EDEAE3;font-family:'Libre Franklin',sans-serif;">
+
+  <!-- about, top right -->
+  <div style="position:absolute;top:28px;right:22px;color:rgba(22,19,15,0.8);font-family:'Big Shoulders Display',sans-serif;font-weight:300;font-size:15px;text-transform:uppercase;letter-spacing:1px;pointer-events:none;">About</div>
+
+  <!-- vertical column: one letter per line, prefix (reserved, bottom-aligned) above the fixed ALREADY! -->
+  <div style="position:absolute;left:50%;top:72px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;">
+    <div id="aa-m-prefix" style="width:60px;height:300px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;overflow:hidden;transition:transform 0.42s cubic-bezier(.5,0,.2,1),opacity 0.42s ease;"></div>
+    <div id="aa-m-suffix" style="width:60px;display:flex;flex-direction:column;align-items:center;"></div>
+  </div>
+
+  <!-- scroll/swipe capture -->
+  <div id="aa-m-capture" style="position:absolute;inset:0;"></div>
+</div>
+
+<script>
+(function () {
+  var words = ['ALRITE', 'BEEN', 'SEEN', 'SPREAD'];
+  var idx = 0;
+  var busy = false;
+  var acc = 0;
+  var THRESH = 90;
+  var capture = document.getElementById('aa-m-capture');
+  var prefix = document.getElementById('aa-m-prefix');
+  var suffix = document.getElementById('aa-m-suffix');
+
+  function lettersHtml(word, color) {
+    return word.split('').map(function (ch) {
+      return '<div class="aa-m-letter" style="color:' + color + ';">' + ch + '</div>';
+    }).join('');
+  }
+
+  suffix.innerHTML = lettersHtml('ALREADY!', '#16130F');
+  prefix.innerHTML = lettersHtml(words[idx], '#E0311D');
+
+  function goTo(step) {
+    if (busy) return;
+    busy = true;
+    var outY = step > 0 ? -50 : 50;
+    var inY = step > 0 ? 50 : -50;
+    prefix.style.transform = 'translateY(' + outY + 'px)';
+    prefix.style.opacity = '0';
+    setTimeout(function () {
+      idx = (idx + step + words.length) % words.length;
+      prefix.innerHTML = lettersHtml(words[idx], '#E0311D');
+      prefix.style.transition = 'none';
+      prefix.style.transform = 'translateY(' + inY + 'px)';
+      prefix.offsetHeight;
+      prefix.style.transition = 'transform 0.42s cubic-bezier(.5,0,.2,1),opacity 0.42s ease';
+      prefix.style.transform = 'translateY(0)';
+      prefix.style.opacity = '1';
+      busy = false;
+    }, 220);
+  }
+
+  capture.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    if (busy) return;
+    acc += e.deltaY;
+    if (Math.abs(acc) >= THRESH) {
+      goTo(acc > 0 ? 1 : -1);
+      acc = 0;
+    }
+  }, { passive: false });
+
+  var touchStartY = null;
+  capture.addEventListener('touchstart', function (e) {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  capture.addEventListener('touchmove', function (e) {
+    if (touchStartY === null || busy) return;
+    var delta = touchStartY - e.touches[0].clientY;
+    if (Math.abs(delta) >= THRESH) {
+      goTo(delta > 0 ? 1 : -1);
+      touchStartY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+})();
+</script>
+</x-dc>
+</body>
+</html>

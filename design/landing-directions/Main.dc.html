@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@800;900&family=Big+Shoulders+Display:wght@100;300&display=swap">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+  </style>
+</helmet>
+<div style="width:1440px;height:900px;position:relative;overflow:hidden;background:#EDEAE3;font-family:'Libre Franklin',sans-serif;">
+
+  <!-- swiss grid -->
+  <div style="position:absolute;left:480px;top:0;width:1px;height:900px;background:rgba(22,19,15,0.06);"></div>
+  <div style="position:absolute;left:960px;top:0;width:1px;height:900px;background:rgba(22,19,15,0.06);"></div>
+  <div style="position:absolute;left:0;top:72px;width:1440px;height:1px;background:rgba(22,19,15,0.1);"></div>
+  <div style="position:absolute;left:0;bottom:72px;width:1440px;height:1px;background:rgba(22,19,15,0.1);"></div>
+
+  <!-- about, centered top -->
+  <div style="position:absolute;top:42px;left:50%;transform:translateX(-50%);color:rgba(22,19,15,0.8);font-family:'Big Shoulders Display',sans-serif;font-weight:300;font-size:20px;text-transform:uppercase;letter-spacing:1px;pointer-events:none;">About</div>
+
+  <!-- fixed suffix: never moves -->
+  <div style="position:absolute;left:720px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Libre Franklin',sans-serif;font-weight:900;font-size:150px;letter-spacing:-0.015em;color:#16130F;pointer-events:none;">ALREADY!</div>
+
+  <!-- animated prefix -->
+  <div id="aa-prefix" style="position:absolute;right:720px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Libre Franklin',sans-serif;font-weight:900;font-size:150px;letter-spacing:-0.015em;color:#E0311D;pointer-events:none;transition:transform 0.42s cubic-bezier(.5,0,.2,1),opacity 0.42s ease;">ALRITE</div>
+
+  <!-- scroll capture: wheel-driven, loops infinitely, no native scrollbar -->
+  <div id="aa-capture" style="position:absolute;inset:0;"></div>
+</div>
+
+<script>
+(function () {
+  var words = ['ALRITE', 'BEEN', 'SEEN', 'SPREAD'];
+  var idx = 0;
+  var busy = false;
+  var acc = 0;
+  var THRESH = 120;
+  var capture = document.getElementById('aa-capture');
+  var prefix = document.getElementById('aa-prefix');
+
+  function goTo(step) {
+    if (busy) return;
+    busy = true;
+    var outX = step > 0 ? -70 : 70;
+    var inX = step > 0 ? 70 : -70;
+    prefix.style.transform = 'translateY(-50%) translateX(' + outX + 'px)';
+    prefix.style.opacity = '0';
+    setTimeout(function () {
+      idx = (idx + step + words.length) % words.length;
+      prefix.textContent = words[idx];
+      prefix.style.transition = 'none';
+      prefix.style.transform = 'translateY(-50%) translateX(' + inX + 'px)';
+      prefix.offsetHeight;
+      prefix.style.transition = 'transform 0.42s cubic-bezier(.5,0,.2,1),opacity 0.42s ease';
+      prefix.style.transform = 'translateY(-50%) translateX(0)';
+      prefix.style.opacity = '1';
+      busy = false;
+    }, 220);
+  }
+
+  capture.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    if (busy) return;
+    acc += e.deltaY;
+    if (Math.abs(acc) >= THRESH) {
+      goTo(acc > 0 ? 1 : -1);
+      acc = 0;
+    }
+  }, { passive: false });
+})();
+</script>
+</x-dc>
+</body>
+</html>

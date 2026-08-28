@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>alritealready — prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;800;900&family=Big+Shoulders+Display:wght@100;300&display=swap">
+<style>
+  :root { --accent: #E0311D; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #EDEAE3; }
+  * { box-sizing: border-box; }
+
+  #desktop, #mobile { position: fixed; inset: 0; font-family: 'Libre Franklin', sans-serif; }
+  #mobile { display: none; }
+
+  @keyframes camera-flash-pop {
+    0%   { opacity: 0; }
+    18%  { opacity: 1; }
+    45%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  .camera-flash.pop { animation: camera-flash-pop 0.4s ease-out; }
+
+  @media (max-width: 640px) {
+    #desktop { display: none; }
+    #mobile { display: block; }
+  }
+
+  .about {
+    position: absolute;
+    color: rgba(22,19,15,0.8);
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    pointer-events: none;
+  }
+
+  /* ---- desktop ---- */
+  #d-about { top: 42px; left: 50%; transform: translateX(-50%); font-size: 20px; }
+  .d-suffix {
+    position: absolute; top: 50%; left: 50%; transform: translateY(-50%);
+    white-space: nowrap; font-weight: 900; letter-spacing: -0.02em;
+    color: #16130F; pointer-events: none;
+    font-size: clamp(44px, 10.8vw, 640px);
+  }
+  .d-prefix {
+    position: absolute; top: 50%; right: 50%;
+    white-space: nowrap; font-weight: 900; letter-spacing: -0.02em;
+    color: var(--accent); pointer-events: none;
+    font-size: clamp(44px, 10.8vw, 640px);
+    will-change: transform, opacity;
+  }
+
+  /* ---- mobile ---- */
+  #m-about { top: 28px; right: 22px; font-size: 15px; }
+  .m-letter { font-family: 'Libre Franklin', sans-serif; font-weight: 900; text-align: center; }
+</style>
+</head>
+<body>
+
+<div id="desktop">
+  <div id="d-about" class="about" style="pointer-events:auto;cursor:pointer;z-index:20;">About</div>
+
+  <div class="d-suffix" id="d-suffix" style="display:flex;align-items:center;">
+    <span id="d-a-slot" style="position:relative;display:inline-block;height:1em;">
+      <span id="d-a-letter" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">A</span>
+      <span id="d-a-plane" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:inherit;">
+        <svg id="d-plane-svg" viewBox="0 0 24 24" style="flex-shrink:0;" fill="currentColor">
+          <path d="M12 1 L13.4 8 L22 14 L22 17 L13.6 14.5 L14 19 L17.5 21 L17.5 23 L12 21.5 L6.5 23 L6.5 21 L10 19 L10.4 14.5 L2 17 L2 14 L10.6 8 Z"/>
+        </svg>
+      </span>
+      <span id="d-a-cheese" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;">
+        <svg id="d-cheese-svg" viewBox="0 0 24 24" style="flex-shrink:0;">
+          <path d="M3 18 L12 3 L21 18 Q21 20 19 20 L5 20 Q3 20 3 18 Z" fill="#F4C430"/>
+          <circle cx="10" cy="14" r="1.3" fill="#EDEAE3"/>
+          <circle cx="14.5" cy="16" r="1" fill="#EDEAE3"/>
+          <circle cx="12" cy="10" r="0.9" fill="#EDEAE3"/>
+        </svg>
+      </span>
+    </span><span id="d-l-slot" style="position:relative;display:inline-block;height:1em;">
+      <span id="d-l-letter" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">L</span>
+      <span id="d-l-boot" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;font-size:0.6em;filter:sepia(1) saturate(2.2) hue-rotate(-8deg) brightness(0.55) contrast(1.1);">👢</span>
+    </span><span>RE</span><span id="d-a2-slot" style="position:relative;display:inline-block;height:1em;">
+      <span id="d-a2-letter" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">A</span>
+      <span id="d-a-camera" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:inherit;">
+        <svg id="d-camera-svg" viewBox="0 0 24 24" style="flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M12 14 L6 22"/>
+          <path d="M12 14 L12 22.5"/>
+          <path d="M12 14 L18 22"/>
+          <rect x="6" y="6" width="12" height="8" rx="1.2"/>
+          <circle cx="12" cy="10" r="2.4"/>
+          <path d="M9.5 6 L9.5 4.2 L14.5 4.2 L14.5 6"/>
+          <path id="d-camera-flash" class="camera-flash" d="M12 6.3 L12.8 9.2 L15.7 10 L12.8 10.8 L12 13.7 L11.2 10.8 L8.3 10 L11.2 9.2 Z" fill="#FFD400" stroke="none" opacity="0"/>
+        </svg>
+      </span>
+      <span id="d-camera-top" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:inherit;clip-path:inset(0 0 37.9% 0);">
+        <svg id="d-camera-top-svg" viewBox="0 0 24 24" style="flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M12 14 L6 22"/>
+          <path d="M12 14 L12 22.5"/>
+          <path d="M12 14 L18 22"/>
+          <rect x="6" y="6" width="12" height="8" rx="1.2"/>
+          <circle cx="12" cy="10" r="2.4"/>
+          <path d="M9.5 6 L9.5 4.2 L14.5 4.2 L14.5 6"/>
+          <path id="d-camera-top-flash" class="camera-flash" d="M12 6.3 L12.8 9.2 L15.7 10 L12.8 10.8 L12 13.7 L11.2 10.8 L8.3 10 L11.2 9.2 Z" fill="#FFD400" stroke="none" opacity="0"/>
+        </svg>
+      </span>
+      <span id="d-camera-bottom" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:inherit;clip-path:inset(62.1% 0 0 0);">
+        <svg id="d-camera-bottom-svg" viewBox="0 0 24 24" style="flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M12 14 L6 22"/>
+          <path d="M12 14 L12 22.5"/>
+          <path d="M12 14 L18 22"/>
+          <rect x="6" y="6" width="12" height="8" rx="1.2"/>
+          <circle cx="12" cy="10" r="2.4"/>
+          <path d="M9.5 6 L9.5 4.2 L14.5 4.2 L14.5 6"/>
+        </svg>
+      </span>
+    </span><span>D</span><span id="d-y-slot" style="position:relative;display:inline-block;height:1em;">
+      <span id="d-y-letter" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">Y</span>
+      <span id="d-y-fork" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:inherit;">
+        <svg id="d-fork-svg" viewBox="0 0 24 24" preserveAspectRatio="none" style="flex-shrink:0;" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 2 L7 9" stroke-width="3"/>
+          <path d="M12 2 L12 9" stroke-width="2"/>
+          <path d="M17 2 L17 9" stroke-width="3"/>
+          <path d="M7 9 Q7 12.5 12 12.5 Q17 12.5 17 9" stroke-width="3"/>
+          <path d="M12 12.5 L12 22" stroke-width="3.2"/>
+        </svg>
+      </span>
+    </span><span>!</span>
+  </div>
+  <div class="d-prefix" id="d-prefix-a">ALRITE</div>
+  <div class="d-prefix" id="d-prefix-b">BEEN</div>
+
+  <div id="d-capture" style="position:absolute;inset:0;"></div>
+  <a id="d-link" href="#" target="_blank" style="position:absolute;pointer-events:none;"></a>
+  <div id="d-measure" style="position:absolute;visibility:hidden;white-space:nowrap;left:-9999px;top:-9999px;font-family:'Libre Franklin',sans-serif;font-weight:900;letter-spacing:-0.02em;"></div>
+</div>
+
+<div id="mobile">
+  <div id="m-about" class="about" style="pointer-events:auto;cursor:pointer;z-index:20;">About</div>
+  <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;">
+    <div id="m-prefix-window" style="position:relative;overflow:hidden;">
+      <div id="m-prefix-a" style="position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;"></div>
+      <div id="m-prefix-b" style="position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;"></div>
+    </div>
+    <div id="m-suffix" style="display:flex;flex-direction:column;align-items:center;">
+      <div id="m-a-slot" style="position:relative;">
+        <div id="m-a-letter" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#16130F;font-family:'Libre Franklin',sans-serif;font-weight:900;">A</div>
+        <div id="m-a-plane" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:#16130F;">
+          <svg id="m-plane-svg" viewBox="0 0 24 24" style="flex-shrink:0;" fill="currentColor">
+            <path d="M12 1 L13.4 8 L22 14 L22 17 L13.6 14.5 L14 19 L17.5 21 L17.5 23 L12 21.5 L6.5 23 L6.5 21 L10 19 L10.4 14.5 L2 17 L2 14 L10.6 8 Z"/>
+          </svg>
+        </div>
+        <div id="m-a-cheese" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;">
+          <svg id="m-cheese-svg" viewBox="0 0 24 24" style="flex-shrink:0;">
+            <path d="M3 18 L12 3 L21 18 Q21 20 19 20 L5 20 Q3 20 3 18 Z" fill="#F4C430"/>
+            <circle cx="10" cy="14" r="1.3" fill="#EDEAE3"/>
+            <circle cx="14.5" cy="16" r="1" fill="#EDEAE3"/>
+            <circle cx="12" cy="10" r="0.9" fill="#EDEAE3"/>
+          </svg>
+        </div>
+      </div>
+      <div id="m-l-slot" style="position:relative;">
+        <div id="m-l-letter" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#16130F;font-family:'Libre Franklin',sans-serif;font-weight:900;">L</div>
+        <div id="m-l-boot" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;font-size:0.6em;filter:sepia(1) saturate(2.2) hue-rotate(-8deg) brightness(0.55) contrast(1.1);">👢</div>
+      </div>
+      <div id="m-row-r" style="color:#16130F;font-family:'Libre Franklin',sans-serif;font-weight:900;">R</div>
+      <div id="m-row-e" style="color:#16130F;font-family:'Libre Franklin',sans-serif;font-weight:900;">E</div>
+      <div id="m-a2-slot" style="position:relative;">
+        <div id="m-a2-letter" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#16130F;font-family:'Libre Franklin',sans-serif;font-weight:900;">A</div>
+        <div id="m-a-camera" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:#16130F;">
+          <svg id="m-camera-svg" viewBox="0 0 24 24" style="flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M12 14 L6 22"/>
+            <path d="M12 14 L12 22.5"/>
+            <path d="M12 14 L18 22"/>
+            <rect x="6" y="6" width="12" height="8" rx="1.2"/>
+            <circle cx="12" cy="10" r="2.4"/>
+            <path d="M9.5 6 L9.5 4.2 L14.5 4.2 L14.5 6"/>
+            <path id="m-camera-flash" class="camera-flash" d="M12 6.3 L12.8 9.2 L15.7 10 L12.8 10.8 L12 13.7 L11.2 10.8 L8.3 10 L11.2 9.2 Z" fill="#FFD400" stroke="none" opacity="0"/>
+          </svg>
+        </div>
+        <div id="m-camera-top" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:#16130F;clip-path:inset(0 0 37.9% 0);">
+          <svg id="m-camera-top-svg" viewBox="0 0 24 24" style="flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M12 14 L6 22"/>
+            <path d="M12 14 L12 22.5"/>
+            <path d="M12 14 L18 22"/>
+            <rect x="6" y="6" width="12" height="8" rx="1.2"/>
+            <circle cx="12" cy="10" r="2.4"/>
+            <path d="M9.5 6 L9.5 4.2 L14.5 4.2 L14.5 6"/>
+            <path id="m-camera-top-flash" class="camera-flash" d="M12 6.3 L12.8 9.2 L15.7 10 L12.8 10.8 L12 13.7 L11.2 10.8 L8.3 10 L11.2 9.2 Z" fill="#FFD400" stroke="none" opacity="0"/>
+          </svg>
+        </div>
+        <div id="m-camera-bottom" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:#16130F;clip-path:inset(62.1% 0 0 0);">
+          <svg id="m-camera-bottom-svg" viewBox="0 0 24 24" style="flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M12 14 L6 22"/>
+            <path d="M12 14 L12 22.5"/>
+            <path d="M12 14 L18 22"/>
+            <rect x="6" y="6" width="12" height="8" rx="1.2"/>
+            <circle cx="12" cy="10" r="2.4"/>
+            <path d="M9.5 6 L9.5 4.2 L14.5 4.2 L14.5 6"/>
+          </svg>
+        </div>
+      </div>
+      <div id="m-row-d" style="color:#16130F;font-family:'Libre Franklin',sans-serif;font-weight:900;">D</div>
+      <div id="m-y-slot" style="position:relative;">
+        <div id="m-y-letter" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#16130F;font-family:'Libre Franklin',sans-serif;font-weight:900;">Y</div>
+        <div id="m-y-fork" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;color:#16130F;">
+          <svg id="m-fork-svg" viewBox="0 0 24 24" preserveAspectRatio="none" style="flex-shrink:0;" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 2 L7 9" stroke-width="3"/>
+            <path d="M12 2 L12 9" stroke-width="2"/>
+            <path d="M17 2 L17 9" stroke-width="3"/>
+            <path d="M7 9 Q7 12.5 12 12.5 Q17 12.5 17 9" stroke-width="3"/>
+            <path d="M12 12.5 L12 22" stroke-width="3.2"/>
+          </svg>
+        </div>
+      </div>
+      <div id="m-row-bang" style="color:#16130F;font-family:'Libre Franklin',sans-serif;font-weight:900;">!</div>
+    </div>
+  </div>
+  <div id="m-capture" style="position:absolute;inset:0;"></div>
+</div>
+
+<div id="d-about-modal" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s ease;background:rgba(22,19,15,0.55);z-index:100;">
+  <div id="d-about-box" style="position:relative;background:#EDEAE3;color:#16130F;padding:clamp(28px, 8vw, 48px) clamp(24px, 9vw, 56px);max-width:480px;width:calc(100% - 48px);transform:scale(0.92);transition:transform 0.3s cubic-bezier(.2,.8,.3,1);font-family:'Libre Franklin',sans-serif;">
+    <button id="d-about-close" style="position:absolute;top:12px;right:14px;background:none;border:none;font-family:'Big Shoulders Display',sans-serif;font-weight:300;font-size:clamp(20px, 5vw, 22px);color:rgba(22,19,15,0.5);cursor:pointer;line-height:1;padding:6px;">&times;</button>
+    <div style="font-weight:400;font-size:clamp(17px, 4.5vw, 21px);line-height:1.4;letter-spacing:-0.005em;color:#16130F;text-align:center;">Collection of things I <span style="color:var(--accent);font-weight:800;">did</span> <span style="color:#16130F;font-weight:800;">already.</span></div>
+  </div>
+</div>
+
+
+<script>
+(function () {
+  var words = ['ALRITE', 'BEEN', 'SEEN', 'SPREAD'];
+
+  // ---------- about modal: shared between desktop and mobile ----------
+  // aboutOpen pauses BOTH views' scroll loops. closeCurrentAbout is reassigned by
+  // whichever view opened the modal, so the (shared) close button/backdrop always
+  // does the right collapse-back animation for wherever it was triggered from.
+  var aboutOpen = false;
+  var aboutModal = document.getElementById('d-about-modal');
+  var aboutBox = document.getElementById('d-about-box');
+  var aboutCloseBtn = document.getElementById('d-about-close');
+  var closeCurrentAbout = function () {};
+
+  function showAboutBox() {
+    aboutModal.style.pointerEvents = 'auto';
+    aboutModal.style.opacity = '1';
+    aboutBox.style.transform = 'scale(1)';
+  }
+  function hideAboutBox() {
+    aboutModal.style.opacity = '0';
+    aboutModal.style.pointerEvents = 'none';
+    aboutBox.style.transform = 'scale(0.92)';
+  }
+  aboutCloseBtn.addEventListener('click', function () { closeCurrentAbout(); });
+  aboutModal.addEventListener('click', function (e) {
+    if (e.target === aboutModal) closeCurrentAbout();
+  });
+
+  // ---------- desktop: fit text to the available space, live ----------
+  (function () {
+    var measure = document.getElementById('d-measure');
+    var suffixEl = document.getElementById('d-suffix');
+    var aSlot = document.getElementById('d-a-slot');
+    var aSlot2 = document.getElementById('d-a2-slot');
+    var lSlot = document.getElementById('d-l-slot');
+    var ySlot = document.getElementById('d-y-slot');
+    var prefixEls = [document.getElementById('d-prefix-a'), document.getElementById('d-prefix-b')];
+    var MARGIN = 10;   // px gap kept from each screen edge
+    var MIN_SIZE = 40;
+    var MAX_SIZE = 680;
+    var REF = 200;      // reference size used to measure the width-per-character ratio
+
+    function measureWidth(text, size) {
+      measure.style.fontSize = size + 'px';
+      measure.textContent = text;
+      return measure.getBoundingClientRect().width;
+    }
+
+    function fit() {
+      var W = window.innerWidth;
+      var suffixW = measureWidth('ALREADY!', REF);
+      var alriteW = measureWidth('ALRITE', REF);
+
+      // size off the ALRITEALREADY! pairing specifically (not the widest-case SPREAD),
+      // with a bit of headroom left over since SPREAD does still need to fit later
+      var HEADROOM = 0.88;
+      var size = HEADROOM * (W - 2 * MARGIN) / ((alriteW + suffixW) / REF);
+      size = Math.max(MIN_SIZE, Math.min(size, MAX_SIZE));
+      var scale = size / REF;
+
+      // center the ALRITEALREADY! pairing specifically, as a whole block — the anchor
+      // (where ALREADY! begins) stays fixed at this point for every word after that
+      var suffixPx = suffixW * scale;
+      var alritePx = alriteW * scale;
+      var leftEdge = (W - (alritePx + suffixPx)) / 2;
+      var anchorPx = leftEdge + alritePx;
+
+      var letterAW = measureWidth('A', REF) * scale;
+      var letterLW = measureWidth('L', REF) * scale;
+      var letterYW = measureWidth('Y', REF) * scale;
+
+      suffixEl.style.fontSize = size + 'px';
+      suffixEl.style.left = anchorPx + 'px';
+      suffixEl.style.right = 'auto';
+      aSlot.style.width = letterAW + 'px';
+      aSlot2.style.width = letterAW + 'px';
+      lSlot.style.width = letterLW + 'px';
+      ySlot.style.width = letterYW + 'px';
+      prefixEls.forEach(function (el) {
+        el.style.fontSize = size + 'px';
+        el.style.right = (W - anchorPx) + 'px';
+        el.style.left = 'auto';
+      });
+    }
+
+    fit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(fit, 80);
+    });
+  })();
+
+  // ---------- desktop: direct scroll-following, smoothed, both directions, fixed step ----------
+  (function () {
+    // tune feel here:
+    var STEP = 1 / 18;       // fixed pos-advance per wheel EVENT (ignores deltaY magnitude,
+                              // so OS/trackpad scroll-acceleration can't make the distance-
+                              // per-click drift) — 18 clicks per word, same every time
+    var SMOOTH = 0.14;       // how quickly the rendered position catches up to raw scroll input —
+                              // this is what makes a fast/choppy "mega scroll" glide instead of jump
+    var EXIT_TRAVEL = 78;   // vw — outgoing word travels far, a real sweep across
+    var ENTER_TRAVEL = 5;   // vw — incoming word only eases in from just beside
+                             // ALREADY!, not from the screen edge
+
+    // "A" morph icons — size (em, relative to the letter's own font-size) and vertical
+    // nudge (%, negative = up) to line up with the surrounding letters' cap-height
+    var PLANE_SIZE = 0.8;
+    var PLANE_NUDGE = 0;
+    var CAMERA_SIZE = 1;
+    var CAMERA_NUDGE = -8;
+    var BOOT_NUDGE = -4;      // up
+    var BOOT_X_NUDGE = -4;    // left
+    var BOOT_SCALE_X = 1.15;  // width — grows half as much as height
+    var BOOT_SCALE_Y = 1.2;   // height — a few notches taller
+    var CHEESE_SIZE = 1.05;
+    var CHEESE_NUDGE = 0;
+    var FORK_WIDTH = 0.96;   // wide — independent of height now, so this can grow
+                              // without the fork exceeding the text's cap-height
+    var FORK_HEIGHT = 0.79;
+    var FORK_NUDGE = -1;
+    var CAMERA_SPLIT = 90; // % the top/bottom halves travel apart as the camera exits
+
+    var capture = document.getElementById('d-capture');
+    var dLink = document.getElementById('d-link');
+    var suffixEl = document.getElementById('d-suffix');
+    var wordA = document.getElementById('d-prefix-a');
+    var wordB = document.getElementById('d-prefix-b');
+    var aboutEl = document.getElementById('d-about');
+    var aLetter = document.getElementById('d-a-letter');
+    var aPlane = document.getElementById('d-a-plane');
+    var aCheese = document.getElementById('d-a-cheese');
+    var lLetter = document.getElementById('d-l-letter');
+    var lBoot = document.getElementById('d-l-boot');
+    var aLetter2 = document.getElementById('d-a2-letter');
+    var aCamera = document.getElementById('d-a-camera');
+    var yLetter = document.getElementById('d-y-letter');
+    var yFork = document.getElementById('d-y-fork');
+    var cameraTop = document.getElementById('d-camera-top');
+    var cameraBottom = document.getElementById('d-camera-bottom');
+    var cameraFlash = document.getElementById('d-camera-flash');
+    var cameraTopFlash = document.getElementById('d-camera-top-flash');
+    var cameraFlashed = false;      // formed-flash: one-shot per approach
+    var cameraSplitFlashed = false; // split-flash: one-shot per exit
+
+    function popFlash(el) {
+      el.classList.remove('pop');
+      void el.getBoundingClientRect(); // restart the animation if retriggered
+      el.classList.add('pop');
+    }
+
+    var planeSvg = document.getElementById('d-plane-svg');
+    var cameraSvg = document.getElementById('d-camera-svg');
+    var cameraTopSvg = document.getElementById('d-camera-top-svg');
+    var cameraBottomSvg = document.getElementById('d-camera-bottom-svg');
+    var cheeseSvg = document.getElementById('d-cheese-svg');
+    var forkSvg = document.getElementById('d-fork-svg');
+    cheeseSvg.style.width = cheeseSvg.style.height = CHEESE_SIZE + 'em';
+    forkSvg.style.width = FORK_WIDTH + 'em';
+    forkSvg.style.height = FORK_HEIGHT + 'em';
+    planeSvg.style.width = planeSvg.style.height = PLANE_SIZE + 'em';
+    cameraSvg.style.width = cameraSvg.style.height = CAMERA_SIZE + 'em';
+    cameraTopSvg.style.width = cameraTopSvg.style.height = CAMERA_SIZE + 'em';
+    cameraBottomSvg.style.width = cameraBottomSvg.style.height = CAMERA_SIZE + 'em';
+
+    var rawPos = 0;      // pure accumulator, moves either direction — never snaps or resets
+    var displayPos = 0;  // smoothed position actually rendered
+
+    // click-to-go-live zone: within ACTIVE_STEPS clicks of a word being fully settled,
+    // the cursor becomes a pointer and clicking opens that word's link — and disables
+    // again once you're more than that many clicks away, mid-transition. BEEN and SEEN
+    // both have placeholder URLs so the disable-then-reactivate handoff is testable.
+    var ACTIVE_STEPS = 5;
+    var ACTIVE_THRESHOLD = ACTIVE_STEPS * STEP;
+    var LINKS = { 1: 'https://didalready.com', 2: 'https://seenalready.com', 3: 'https://spreadalready.com' }; // BEEN=1, SEEN=2, SPREAD=3
+    var linkActive = false;
+    var linkURL = null;
+
+    function mod(n, m) { return ((n % m) + m) % m; }
+
+    function render(pos) {
+      var base = Math.floor(pos);
+      var frac = pos - base;
+      wordA.textContent = words[mod(base, words.length)];
+      wordB.textContent = words[mod(base + 1, words.length)];
+      wordA.style.transform = 'translateY(-50%) translateX(' + (-frac * EXIT_TRAVEL) + 'vw)';
+      wordA.style.opacity = 1 - frac;
+      wordB.style.transform = 'translateY(-50%) translateX(' + ((1 - frac) * ENTER_TRAVEL) + 'vw)';
+      wordB.style.opacity = frac;
+
+      var nearestIdx = Math.round(pos);
+      var settledWord = mod(nearestIdx, words.length);
+      var distFromSettled = Math.abs(pos - nearestIdx);
+      linkActive = distFromSettled <= ACTIVE_THRESHOLD && LINKS[settledWord] !== undefined;
+      linkURL = linkActive ? LINKS[settledWord] : null;
+
+      // the clickable/hoverable region is just the text itself — sized to the actual
+      // wordmark each time it's active, not the whole page. getBoundingClientRect
+      // includes the font's full line-box (ascent/descent beyond the visible glyphs),
+      // so trim vertically down toward the actual cap-height.
+      if (linkActive) {
+        var wRect = wordA.getBoundingClientRect();
+        var sRect = suffixEl.getBoundingClientRect();
+        var left = Math.min(wRect.left, sRect.left);
+        var right = Math.max(wRect.right, sRect.right);
+        var top = Math.min(wRect.top, sRect.top);
+        var bottom = Math.max(wRect.bottom, sRect.bottom);
+        var vTrim = (bottom - top) * 0.16;
+        top += vTrim;
+        bottom -= vTrim;
+        dLink.style.left = left + 'px';
+        dLink.style.top = top + 'px';
+        dLink.style.width = (right - left) + 'px';
+        dLink.style.height = (bottom - top) + 'px';
+        dLink.style.pointerEvents = 'auto';
+        dLink.style.cursor = 'pointer';
+        dLink.href = linkURL;
+      } else {
+        dLink.style.pointerEvents = 'none';
+      }
+
+      // experiment: each leg of the journey morphs a DIFFERENT letter in ALREADY! —
+      // the 1st A forms a plane during ALRITE->BEEN, then reverts to a plain letter
+      // during BEEN->SEEN as the 2nd A takes over and forms a camera, reverting as
+      // SEEN->SPREAD completes.
+      var slot = mod(base, words.length);
+
+      // "on screen while BEEN is showing": forms during ALRITE->BEEN, reverts during
+      // BEEN->SEEN — same timing as the plane, so all three are visible together once
+      // BEEN has fully settled in.
+      var beenLegLetterOpacity = slot === 0 ? 1 - frac : slot === 1 ? frac : 1;
+      var beenLegIconOpacity = slot === 0 ? frac : slot === 1 ? 1 - frac : 0;
+
+      var seenLegLetterOpacity = slot === 1 ? 1 - frac : slot === 2 ? frac : 1;
+      var seenLegIconOpacity = slot === 1 ? frac : slot === 2 ? 1 - frac : 0;
+
+      // SPREAD leg: forms during SEEN->SPREAD, reverts during SPREAD->ALRITE. Y is
+      // free the rest of the loop, so it just uses this directly. The first A is
+      // shared with the plane (its own BEEN-leg icon), so its opacity combines both:
+      // exit for the plane (slot 0/1), then exit again for the cheese (slot 2/3).
+      var spreadLegLetterOpacity = slot === 2 ? 1 - frac : slot === 3 ? frac : 1;
+      var spreadLegIconOpacity = slot === 2 ? frac : slot === 3 ? 1 - frac : 0;
+      var a1LetterOpacity = slot === 0 ? 1 - frac : slot === 1 ? frac : slot === 2 ? 1 - frac : frac;
+
+      function apply(el, opacity, dyPercent, rotateSign) {
+        rotateSign = rotateSign === undefined ? 1 : rotateSign;
+        el.style.opacity = opacity;
+        el.style.transform = 'translateY(' + (dyPercent || 0) + '%) scale(' + (0.5 + 0.5 * opacity) + ') rotate(' + (rotateSign * 15 * (1 - opacity)) + 'deg)';
+      }
+      // travels through a slot continuously rather than reversing: at entrySlot it
+      // comes in from xEntry -> 0; on the OTHER active slot it continues on from
+      // 0 -> xExit (same direction of travel, not backtracking)
+      function axisMove(el, opacity, slotNow, entrySlot, xEntry, xExit, axis, nudgePercent, scaleX, scaleY, mainOffset) {
+        el.style.opacity = opacity;
+        var x = slotNow === entrySlot ? xEntry : xExit;
+        var d = (1 - opacity) * x + (mainOffset || 0);
+        var n = nudgePercent || 0;
+        var move = axis === 'x'
+          ? 'translate(' + d + '%, ' + n + '%)'
+          : 'translate(' + n + '%, ' + d + '%)';
+        el.style.transform = (scaleX || scaleY)
+          ? move + ' scale(' + (scaleX || 1) + ', ' + (scaleY || 1) + ')'
+          : move;
+      }
+
+      // letter A flies out the top during ALRITE->BEEN, then — when it reappears as
+      // the plane finishes its exit during BEEN->SEEN — comes back in from the bottom.
+      // During SEEN->SPREAD / SPREAD->ALRITE it hands off to the cheese wedge instead,
+      // as a plain fade+scale from center, no tilt.
+      if (slot === 0 || slot === 1) {
+        axisMove(aLetter, a1LetterOpacity, slot, 1, 140, -140, 'y');
+      } else {
+        apply(aLetter, a1LetterOpacity, 0, 0);
+      }
+
+      // the plane flies in from below during ALRITE->BEEN, then keeps flying upward
+      // and off (never reversing back down) during BEEN->SEEN
+      axisMove(aPlane, beenLegIconOpacity, slot, 0, 200, -200, 'y', PLANE_NUDGE);
+
+      // the boot walks in left-to-right during ALRITE->BEEN, then keeps walking right
+      // and off (never retreating back left) during BEEN->SEEN
+      apply(lLetter, beenLegLetterOpacity, 0);
+      axisMove(lBoot, beenLegIconOpacity, slot, 0, -70, 70, 'x', BOOT_NUDGE, BOOT_SCALE_X, BOOT_SCALE_Y, BOOT_X_NUDGE);
+
+      // camera: forms whole during BEEN->SEEN (plain fade/scale); on SEEN->SPREAD it
+      // splits into top/bottom halves that fly apart as it exits, while the letter A
+      // simply fades back in from center (no tilt) to take its place
+      apply(aLetter2, seenLegLetterOpacity, 0, 0);
+      if (slot === 2) {
+        aCamera.style.opacity = 0;
+        var splitAmt = (1 - seenLegIconOpacity) * CAMERA_SPLIT;
+        cameraTop.style.opacity = seenLegIconOpacity;
+        cameraTop.style.transform = 'translateY(' + (CAMERA_NUDGE - splitAmt) + '%)';
+        cameraBottom.style.opacity = seenLegIconOpacity;
+        cameraBottom.style.transform = 'translateY(' + (CAMERA_NUDGE + splitAmt) + '%)';
+      } else {
+        apply(aCamera, seenLegIconOpacity, CAMERA_NUDGE);
+        cameraTop.style.opacity = 0;
+        cameraBottom.style.opacity = 0;
+      }
+
+      // easter eggs — both use a symmetric band around their trigger point, rather
+      // than a one-sided ">=" check, so they fire the same whether you scroll down
+      // INTO the point or scroll up back INTO it from the other side.
+
+      // #1: right at the moment the camera is fully formed (slot1/slot2 boundary)
+      var distToFormed = slot === 1 ? 1 - frac : slot === 2 ? frac : 1;
+      if (distToFormed < 0.02) {
+        if (!cameraFlashed) { cameraFlashed = true; popFlash(cameraFlash); }
+      } else {
+        cameraFlashed = false;
+      }
+
+      // #2: a couple of clicks into the split, on either side of that band
+      var inSplitBand = slot === 2 && frac >= STEP && frac <= 3 * STEP;
+      if (inSplitBand) {
+        if (!cameraSplitFlashed) { cameraSplitFlashed = true; popFlash(cameraTopFlash); }
+      } else {
+        cameraSplitFlashed = false;
+      }
+
+      // the cheese wedge: SPREAD leg, sharing the first A with the plane above —
+      // enters right-to-left, keeps traveling left (never reverses) as it exits
+      axisMove(aCheese, spreadLegIconOpacity, slot, 2, 70, -70, 'x', CHEESE_NUDGE);
+
+      // the fork: SPREAD leg, on the last letter (Y) — enters bottom-to-top, keeps
+      // traveling up (never reverses) as it exits
+      apply(yLetter, spreadLegLetterOpacity, 0);
+      axisMove(yFork, spreadLegIconOpacity, slot, 2, 70, -70, 'y', FORK_NUDGE);
+    }
+
+    function frame() {
+      if (!aboutOpen) {
+        displayPos += (rawPos - displayPos) * SMOOTH;
+        render(displayPos);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    render(displayPos);
+    requestAnimationFrame(frame);
+
+    function onWheel(e) {
+      if (aboutOpen) return;
+      e.preventDefault();
+      rawPos += e.deltaY > 0 ? STEP : -STEP; // scroll down = forward, scroll up = backward
+    }
+    capture.addEventListener('wheel', onWheel, { passive: false });
+    // the link overlay sits above the capture div while active, so it needs its own
+    // listener too — otherwise scrolling stops the moment the cursor is over the link
+    dLink.addEventListener('wheel', onWheel, { passive: false });
+
+    // about: click scatters the current wordmark's letters apart and fades them,
+    // then the "confused already?" box fades in. Closing reverses it — the box fades
+    // out and a fresh render() rebuilds the wordmark normally (scroll was paused the
+    // whole time, so nothing moved underneath).
+    var scatteredPieces = [];
+
+    function scatterChars(el) {
+      var text = el.textContent;
+      el.innerHTML = '';
+      var spans = [];
+      text.split('').forEach(function (ch) {
+        var span = document.createElement('span');
+        span.textContent = ch === ' ' ? ' ' : ch;
+        span.style.display = 'inline-block';
+        span.style.transition = 'transform 0.7s cubic-bezier(.2,.7,.3,1), opacity 0.6s ease';
+        el.appendChild(span);
+        spans.push(span);
+      });
+      return spans;
+    }
+
+    // suffixEl holds the special letter-morph machinery (plane/boot/camera/etc.) —
+    // its element children must never be destroyed, only its plain text runs
+    // (the static "RE", "D", "!") are safe to split into per-character spans
+    function scatterChildren(el) {
+      var nodes = Array.prototype.slice.call(el.childNodes);
+      var pieces = [];
+      nodes.forEach(function (node) {
+        if (node.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          node.textContent.split('').forEach(function (ch) {
+            var span = document.createElement('span');
+            span.textContent = ch;
+            span.style.display = 'inline-block';
+            span.style.transition = 'transform 0.7s cubic-bezier(.2,.7,.3,1), opacity 0.6s ease';
+            frag.appendChild(span);
+            pieces.push(span);
+          });
+          el.replaceChild(frag, node);
+        } else {
+          node.style.transition = 'transform 0.7s cubic-bezier(.2,.7,.3,1), opacity 0.6s ease';
+          pieces.push(node);
+        }
+      });
+      return pieces;
+    }
+
+    function desktopOpenAbout() {
+      if (aboutOpen) return;
+      aboutOpen = true;
+      scatteredPieces = scatterChars(wordA).concat(scatterChars(wordB)).concat(scatterChildren(suffixEl));
+      void wordA.getBoundingClientRect(); // force layout before animating
+      scatteredPieces.forEach(function (span) {
+        var dx = (Math.random() - 0.5) * window.innerWidth * 1.3;
+        var dy = (Math.random() - 0.5) * window.innerHeight * 1.3;
+        var rot = (Math.random() - 0.5) * 720;
+        var delay = Math.random() * 140;
+        setTimeout(function () {
+          span.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) rotate(' + rot + 'deg)';
+          span.style.opacity = '0';
+        }, delay);
+      });
+      setTimeout(showAboutBox, 700);
+    }
+
+    function desktopCloseAbout() {
+      hideAboutBox();
+
+      // collapse the scattered pieces back to their assembled spot, then hand back
+      // to the live renderer once they've arrived
+      scatteredPieces.forEach(function (span) {
+        span.style.transform = '';
+        span.style.opacity = '';
+      });
+
+      setTimeout(function () {
+        aboutOpen = false;
+        scatteredPieces = [];
+        render(displayPos);
+      }, 700);
+    }
+
+    aboutEl.addEventListener('click', function () {
+      closeCurrentAbout = desktopCloseAbout;
+      desktopOpenAbout();
+    });
+  })();
+
+  // ---------- mobile: same continuous physics as desktop, rotated to vertical ----------
+  (function () {
+    // tune feel here — same values as desktop, so the two are directly comparable:
+    var STEP = 1 / 18;
+    var SMOOTH = 0.14;
+    var EXIT_Y = 0;   // px — set live in fit(), a bit more than the window's own height
+    var ENTER_Y = 0;  // px — set live in fit(), a small near-anchor offset
+
+    var measure = document.getElementById('d-measure'); // shared offscreen measurer
+    var capture = document.getElementById('m-capture');
+    var win = document.getElementById('m-prefix-window');
+    var prefixA = document.getElementById('m-prefix-a');
+    var prefixB = document.getElementById('m-prefix-b');
+    var suffixEl = document.getElementById('m-suffix');
+
+    // suffix icon slots — same set as desktop, same icons, ported with the
+    // requested directions: plane down->up, boot left->right, camera split+flash
+    // unchanged, cheese right->left, fork bottom->top
+    var mALetter = document.getElementById('m-a-letter');
+    var mAPlane = document.getElementById('m-a-plane');
+    var mACheese = document.getElementById('m-a-cheese');
+    var mLLetter = document.getElementById('m-l-letter');
+    var mLBoot = document.getElementById('m-l-boot');
+    var mA2Letter = document.getElementById('m-a2-letter');
+    var mACamera = document.getElementById('m-a-camera');
+    var mCameraTop = document.getElementById('m-camera-top');
+    var mCameraBottom = document.getElementById('m-camera-bottom');
+    var mCameraFlash = document.getElementById('m-camera-flash');
+    var mCameraTopFlash = document.getElementById('m-camera-top-flash');
+    var mYLetter = document.getElementById('m-y-letter');
+    var mYFork = document.getElementById('m-y-fork');
+    var suffixRows = [
+      document.getElementById('m-a-slot'), document.getElementById('m-l-slot'),
+      document.getElementById('m-row-r'), document.getElementById('m-row-e'),
+      document.getElementById('m-a2-slot'), document.getElementById('m-row-d'),
+      document.getElementById('m-y-slot'), document.getElementById('m-row-bang')
+    ];
+
+    var PLANE_SIZE = 0.8, PLANE_NUDGE = 0;
+    var CAMERA_SIZE = 1.1, CAMERA_NUDGE = -8, CAMERA_SPLIT = 90;
+    var BOOT_NUDGE = -4, BOOT_X_NUDGE = 1, BOOT_SCALE_X = 1.15, BOOT_SCALE_Y = 1.2;
+    var CHEESE_SIZE = 1.05, CHEESE_NUDGE = 0;
+    var FORK_WIDTH = 0.96, FORK_HEIGHT = 0.79, FORK_NUDGE = -1;
+    var sizesSet = false;
+
+    var MAX_PREFIX_LEN = 6;      // ALRITE / SPREAD
+    var SUFFIX_LEN = 8;          // ALREADY!
+    var MARGIN_X = 24;
+    var MARGIN_Y = 160;          // room for "About" + breathing space top/bottom
+    var MIN_SIZE = 20, MAX_SIZE = 110;
+    var SIZE_BOOST = 1.15; // overall scale-up once the fit is computed
+    var REF = 100;
+    var fontSize = 40;
+
+    function measureWidth(text, size) {
+      measure.style.fontSize = size + 'px';
+      measure.textContent = text;
+      return measure.getBoundingClientRect().width;
+    }
+
+    function fit() {
+      var widthAvail = window.innerWidth - 2 * MARGIN_X;
+      var heightAvail = window.innerHeight - MARGIN_Y;
+      var widestCharW = 0;
+      'ALRITEALREADY!SEENSPREAD'.split('').forEach(function (ch) {
+        var w = measureWidth(ch, REF);
+        if (w > widestCharW) widestCharW = w;
+      });
+      var byWidth = widthAvail / (widestCharW / REF);
+      var byHeight = heightAvail / (MAX_PREFIX_LEN + SUFFIX_LEN);
+      fontSize = Math.max(MIN_SIZE, Math.min(byWidth, byHeight, MAX_SIZE / SIZE_BOOST) * SIZE_BOOST);
+
+      win.style.width = (fontSize * 1.4) + 'px';
+      win.style.height = (fontSize * MAX_PREFIX_LEN) + 'px';
+      suffixEl.style.width = (fontSize * 1.4) + 'px';
+      suffixRows.forEach(function (row) {
+        row.style.width = (fontSize * 1.4) + 'px';
+        row.style.height = fontSize + 'px';
+        row.style.lineHeight = fontSize + 'px';
+        row.style.fontSize = fontSize + 'px';
+        row.style.textAlign = 'center';
+      });
+
+      // icon em-sizes only need setting once — they're relative to each row's own
+      // font-size, so they rescale automatically whenever that changes above
+      if (!sizesSet) {
+        sizesSet = true;
+        document.getElementById('m-plane-svg').style.width = document.getElementById('m-plane-svg').style.height = PLANE_SIZE + 'em';
+        document.getElementById('m-cheese-svg').style.width = document.getElementById('m-cheese-svg').style.height = CHEESE_SIZE + 'em';
+        document.getElementById('m-camera-svg').style.width = document.getElementById('m-camera-svg').style.height = CAMERA_SIZE + 'em';
+        document.getElementById('m-camera-top-svg').style.width = document.getElementById('m-camera-top-svg').style.height = CAMERA_SIZE + 'em';
+        document.getElementById('m-camera-bottom-svg').style.width = document.getElementById('m-camera-bottom-svg').style.height = CAMERA_SIZE + 'em';
+        var mForkSvg = document.getElementById('m-fork-svg');
+        mForkSvg.style.width = FORK_WIDTH + 'em';
+        mForkSvg.style.height = FORK_HEIGHT + 'em';
+      }
+
+      EXIT_Y = window.innerHeight * 0.75;
+      ENTER_Y = fontSize * 0.9;
+
+      render(displayPos);
+    }
+
+    function lettersHtml(word, color) {
+      return word.split('').map(function (ch) {
+        return '<div style="color:' + color + ';font-size:' + fontSize + 'px;line-height:' + fontSize + 'px;height:' + fontSize + 'px;font-family:\'Libre Franklin\',sans-serif;font-weight:900;">' + ch + '</div>';
+      }).join('');
+    }
+
+    var rawPos = 0;
+    var displayPos = 0;
+    var mCameraFlashed = false;
+    var mCameraSplitFlashed = false;
+
+    function mod(n, m) { return ((n % m) + m) % m; }
+
+    function apply(el, opacity, dyPercent, rotateSign) {
+      rotateSign = rotateSign === undefined ? 1 : rotateSign;
+      el.style.opacity = opacity;
+      el.style.transform = 'translateY(' + (dyPercent || 0) + '%) scale(' + (0.5 + 0.5 * opacity) + ') rotate(' + (rotateSign * 15 * (1 - opacity)) + 'deg)';
+    }
+    function axisMove(el, opacity, slotNow, entrySlot, xEntry, xExit, axis, nudgePercent, scaleX, scaleY, mainOffset) {
+      el.style.opacity = opacity;
+      var x = slotNow === entrySlot ? xEntry : xExit;
+      var d = (1 - opacity) * x + (mainOffset || 0);
+      var n = nudgePercent || 0;
+      var move = axis === 'x' ? 'translate(' + d + '%, ' + n + '%)' : 'translate(' + n + '%, ' + d + '%)';
+      el.style.transform = (scaleX || scaleY) ? move + ' scale(' + (scaleX || 1) + ', ' + (scaleY || 1) + ')' : move;
+    }
+    function popFlash(el) {
+      el.classList.remove('pop');
+      void el.getBoundingClientRect();
+      el.classList.add('pop');
+    }
+
+    function render(pos) {
+      var base = Math.floor(pos);
+      var frac = pos - base;
+      var slot = mod(base, words.length);
+
+      prefixA.innerHTML = lettersHtml(words[mod(base, words.length)], 'var(--accent)');
+      prefixB.innerHTML = lettersHtml(words[mod(base + 1, words.length)], 'var(--accent)');
+      prefixA.style.transform = 'translateY(' + (-frac * EXIT_Y) + 'px)';
+      prefixA.style.opacity = 1 - frac;
+      prefixB.style.transform = 'translateY(' + ((1 - frac) * ENTER_Y) + 'px)';
+      prefixB.style.opacity = frac;
+
+      var beenLegLetterOpacity = slot === 0 ? 1 - frac : slot === 1 ? frac : 1;
+      var beenLegIconOpacity = slot === 0 ? frac : slot === 1 ? 1 - frac : 0;
+      var seenLegLetterOpacity = slot === 1 ? 1 - frac : slot === 2 ? frac : 1;
+      var seenLegIconOpacity = slot === 1 ? frac : slot === 2 ? 1 - frac : 0;
+      var spreadLegLetterOpacity = slot === 2 ? 1 - frac : slot === 3 ? frac : 1;
+      var spreadLegIconOpacity = slot === 2 ? frac : slot === 3 ? 1 - frac : 0;
+      var a1LetterOpacity = slot === 0 ? 1 - frac : slot === 1 ? frac : slot === 2 ? 1 - frac : frac;
+
+      // A: plane (BEEN leg, down->up) then cheese (SPREAD leg, right->left)
+      if (slot === 0 || slot === 1) {
+        axisMove(mALetter, a1LetterOpacity, slot, 1, 140, -140, 'y');
+      } else {
+        apply(mALetter, a1LetterOpacity, 0, 0);
+      }
+      axisMove(mAPlane, beenLegIconOpacity, slot, 0, 200, -200, 'y', PLANE_NUDGE);
+      axisMove(mACheese, spreadLegIconOpacity, slot, 2, 70, -70, 'x', CHEESE_NUDGE);
+
+      // L: boot, left->right
+      apply(mLLetter, beenLegLetterOpacity, 0);
+      axisMove(mLBoot, beenLegIconOpacity, slot, 0, -70, 70, 'x', BOOT_NUDGE, BOOT_SCALE_X, BOOT_SCALE_Y, BOOT_X_NUDGE);
+
+      // 2nd A: camera — splits top/bottom on the SEEN->SPREAD exit, with the flash
+      if (slot === 2) {
+        mACamera.style.opacity = 0;
+        var splitAmt = (1 - seenLegIconOpacity) * CAMERA_SPLIT;
+        mCameraTop.style.opacity = seenLegIconOpacity;
+        mCameraTop.style.transform = 'translateY(' + (CAMERA_NUDGE - splitAmt) + '%)';
+        mCameraBottom.style.opacity = seenLegIconOpacity;
+        mCameraBottom.style.transform = 'translateY(' + (CAMERA_NUDGE + splitAmt) + '%)';
+      } else {
+        apply(mACamera, seenLegIconOpacity, CAMERA_NUDGE);
+        mCameraTop.style.opacity = 0;
+        mCameraBottom.style.opacity = 0;
+      }
+      apply(mA2Letter, seenLegLetterOpacity, 0, 0);
+
+      var distToFormed = slot === 1 ? 1 - frac : slot === 2 ? frac : 1;
+      if (distToFormed < 0.02) {
+        if (!mCameraFlashed) { mCameraFlashed = true; popFlash(mCameraFlash); }
+      } else {
+        mCameraFlashed = false;
+      }
+      var inSplitBand = slot === 2 && frac >= STEP && frac <= 3 * STEP;
+      if (inSplitBand) {
+        if (!mCameraSplitFlashed) { mCameraSplitFlashed = true; popFlash(mCameraTopFlash); }
+      } else {
+        mCameraSplitFlashed = false;
+      }
+
+      // Y: fork, bottom->top
+      apply(mYLetter, spreadLegLetterOpacity, 0);
+      axisMove(mYFork, spreadLegIconOpacity, slot, 2, 70, -70, 'y', FORK_NUDGE);
+    }
+
+    function frame() {
+      if (!aboutOpen) {
+        displayPos += (rawPos - displayPos) * SMOOTH;
+        render(displayPos);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    fit();
+    requestAnimationFrame(frame);
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(fit, 80);
+    });
+
+    function step(dir) {
+      if (aboutOpen) return;
+      rawPos += dir > 0 ? STEP : -STEP;
+    }
+
+    capture.addEventListener('wheel', function (e) {
+      if (aboutOpen) return;
+      e.preventDefault();
+      step(e.deltaY);
+    }, { passive: false });
+
+    var touchStartY = null, touchAcc = 0;
+    var TOUCH_STEP_PX = 34;
+    capture.addEventListener('touchstart', function (e) {
+      touchStartY = e.touches[0].clientY;
+      touchAcc = 0;
+    }, { passive: true });
+    capture.addEventListener('touchmove', function (e) {
+      if (aboutOpen || touchStartY === null) return;
+      var y = e.touches[0].clientY;
+      touchAcc += touchStartY - y;
+      touchStartY = y;
+      while (Math.abs(touchAcc) >= TOUCH_STEP_PX) {
+        step(touchAcc > 0 ? 1 : -1);
+        touchAcc += touchAcc > 0 ? -TOUCH_STEP_PX : TOUCH_STEP_PX;
+      }
+    }, { passive: true });
+
+    // about: grabs the existing row/slot elements directly and only ever moves
+    // them (never destroys their contents), so the suffix's icon machinery is
+    // preserved through a scatter — render() then re-applies live state on close
+    var mAboutEl = document.getElementById('m-about');
+    var mScattered = [];
+
+    function mobileOpenAbout() {
+      if (aboutOpen) return;
+      aboutOpen = true;
+      var els = []
+        .concat(Array.prototype.slice.call(prefixA.children))
+        .concat(Array.prototype.slice.call(prefixB.children))
+        .concat(Array.prototype.slice.call(suffixEl.children));
+      mScattered = els;
+      els.forEach(function (span) {
+        span.style.transition = 'transform 0.7s cubic-bezier(.2,.7,.3,1), opacity 0.6s ease';
+      });
+      void win.getBoundingClientRect();
+      els.forEach(function (span) {
+        var dx = (Math.random() - 0.5) * window.innerWidth * 1.3;
+        var dy = (Math.random() - 0.5) * window.innerHeight * 1.3;
+        var rot = (Math.random() - 0.5) * 720;
+        var delay = Math.random() * 140;
+        setTimeout(function () {
+          span.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) rotate(' + rot + 'deg)';
+          span.style.opacity = '0';
+        }, delay);
+      });
+      setTimeout(showAboutBox, 700);
+    }
+
+    function mobileCloseAbout() {
+      hideAboutBox();
+      mScattered.forEach(function (span) {
+        span.style.transform = '';
+        span.style.opacity = '';
+      });
+      setTimeout(function () {
+        aboutOpen = false;
+        mScattered = [];
+        render(displayPos);
+      }, 700);
+    }
+
+    mAboutEl.addEventListener('click', function () {
+      closeCurrentAbout = mobileCloseAbout;
+      mobileOpenAbout();
+    });
+  })();
+})();
+</script>
+</body>
+</html>

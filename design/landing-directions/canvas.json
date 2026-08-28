@@ -1,0 +1,19 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "page": "page-1", "is_interactive": true },
+    { "file": "Mobile.dc.html", "x": 1600, "y": 0, "w": 390, "h": 844, "page": "page-1", "is_interactive": true },
+    { "file": "DirectionB.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "page": "page-2" },
+    { "file": "DirectionC.dc.html", "x": 1600, "y": 0, "w": 1440, "h": 900, "page": "page-2" },
+    { "file": "DirectionD.dc.html", "x": 3200, "y": 0, "w": 1440, "h": 900, "page": "page-2" }
+  ],
+  "annotations": [
+    { "id": "note-hero", "x": 0, "y": -140, "w": 460, "text": "ALRITEALREADY! — live, scroll inside this artboard\nALREADY! is fixed and never moves. Scroll to cycle ALRITE -> BEEN -> SEEN -> SPREAD -> ALRITE, loops both directions. Plain, no scroll cue, no dots. Red/black is a placeholder scheme.", "page": "page-1" },
+    { "id": "note-mobile", "x": 1600, "y": -140, "w": 390, "text": "Mobile — live, scroll or swipe inside this artboard\nEvery letter of the phrase stacked one per line. ALREADY! is the fixed bottom letters; the word above it (bottom-aligned so it always meets ALREADY!) cycles on scroll/swipe, loops.", "page": "page-1" },
+    { "id": "note-explorations", "x": 0, "y": -140, "w": 900, "text": "Earlier explorations (not pursued) — kept for reference, not part of the current direction.", "page": "page-2" }
+  ],
+  "pages": [
+    { "id": "page-1", "name": "Design" },
+    { "id": "page-2", "name": "Explorations" }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}
