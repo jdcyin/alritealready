@@ -235,6 +235,7 @@
     </div>
   </div>
   <div id="m-capture" style="position:absolute;inset:0;"></div>
+  <a id="m-link" href="#" target="_blank" style="position:absolute;pointer-events:none;"></a>
 </div>
 
 <div id="d-about-modal" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s ease;background:rgba(22,19,15,0.55);z-index:100;">
@@ -738,6 +739,7 @@
     var prefixA = document.getElementById('m-prefix-a');
     var prefixB = document.getElementById('m-prefix-b');
     var suffixEl = document.getElementById('m-suffix');
+    var mLink = document.getElementById('m-link');
 
     // suffix icon slots — same set as desktop, same icons, ported with the
     // requested directions: plane down->up, boot left->right, camera split+flash
@@ -839,6 +841,12 @@
     var mCameraSplitFlashed = false;
     var mIntroShiftY = 0; // px — entrance offset folded into prefixA below; 0 once settled
 
+    var ACTIVE_STEPS = 5;
+    var ACTIVE_THRESHOLD = ACTIVE_STEPS * STEP;
+    var LINKS = { 1: 'https://didalready.com', 2: 'https://seenalready.com', 3: 'https://spreadalready.com' }; // BEEN=1, SEEN=2, SPREAD=3
+    var linkActive = false;
+    var linkURL = null;
+
     function mod(n, m) { return ((n % m) + m) % m; }
 
     function apply(el, opacity, dyPercent, rotateSign) {
@@ -871,6 +879,29 @@
       prefixA.style.opacity = 1 - frac;
       prefixB.style.transform = 'translateY(' + ((1 - frac) * ENTER_Y) + 'px)';
       prefixB.style.opacity = frac;
+
+      var nearestIdx = Math.round(pos);
+      var settledWord = mod(nearestIdx, words.length);
+      var distFromSettled = Math.abs(pos - nearestIdx);
+      linkActive = distFromSettled <= ACTIVE_THRESHOLD && LINKS[settledWord] !== undefined;
+      linkURL = linkActive ? LINKS[settledWord] : null;
+
+      if (linkActive) {
+        var wRect = win.getBoundingClientRect();
+        var sRect = suffixEl.getBoundingClientRect();
+        var left = Math.min(wRect.left, sRect.left);
+        var right = Math.max(wRect.right, sRect.right);
+        var top = Math.min(wRect.top, sRect.top);
+        var bottom = Math.max(wRect.bottom, sRect.bottom);
+        mLink.style.left = left + 'px';
+        mLink.style.top = top + 'px';
+        mLink.style.width = (right - left) + 'px';
+        mLink.style.height = (bottom - top) + 'px';
+        mLink.style.pointerEvents = 'auto';
+        mLink.href = linkURL;
+      } else {
+        mLink.style.pointerEvents = 'none';
+      }
 
       var beenLegLetterOpacity = slot === 0 ? 1 - frac : slot === 1 ? frac : 1;
       var beenLegIconOpacity = slot === 0 ? frac : slot === 1 ? 1 - frac : 0;
@@ -989,14 +1020,19 @@
       e.preventDefault();
       step(e.deltaY);
     }, { passive: false });
+    mLink.addEventListener('wheel', function (e) {
+      if (aboutOpen) return;
+      e.preventDefault();
+      step(e.deltaY);
+    }, { passive: false });
 
     var touchStartY = null, touchAcc = 0;
     var TOUCH_STEP_PX = 34;
-    capture.addEventListener('touchstart', function (e) {
+    function onTouchStart(e) {
       touchStartY = e.touches[0].clientY;
       touchAcc = 0;
-    }, { passive: true });
-    capture.addEventListener('touchmove', function (e) {
+    }
+    function onTouchMove(e) {
       if (aboutOpen || touchStartY === null) return;
       var y = e.touches[0].clientY;
       touchAcc += touchStartY - y;
@@ -1005,7 +1041,11 @@
         step(touchAcc > 0 ? 1 : -1);
         touchAcc += touchAcc > 0 ? -TOUCH_STEP_PX : TOUCH_STEP_PX;
       }
-    }, { passive: true });
+    }
+    capture.addEventListener('touchstart', onTouchStart, { passive: true });
+    capture.addEventListener('touchmove', onTouchMove, { passive: true });
+    mLink.addEventListener('touchstart', onTouchStart, { passive: true });
+    mLink.addEventListener('touchmove', onTouchMove, { passive: true });
 
     // about: grabs the existing row/slot elements directly and only ever moves
     // them (never destroys their contents), so the suffix's icon machinery is
