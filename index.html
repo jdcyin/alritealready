@@ -1026,21 +1026,16 @@
       step(e.deltaY);
     }, { passive: false });
 
-    var touchStartY = null, touchAcc = 0;
-    var TOUCH_STEP_PX = 34;
+    var touchStartY = null;
+    var TOUCH_PX_PER_UNIT = 220; // px of vertical swipe == one full word transition
     function onTouchStart(e) {
       touchStartY = e.touches[0].clientY;
-      touchAcc = 0;
     }
     function onTouchMove(e) {
       if (aboutOpen || touchStartY === null) return;
       var y = e.touches[0].clientY;
-      touchAcc += touchStartY - y;
+      rawPos += (touchStartY - y) / TOUCH_PX_PER_UNIT;
       touchStartY = y;
-      while (Math.abs(touchAcc) >= TOUCH_STEP_PX) {
-        step(touchAcc > 0 ? 1 : -1);
-        touchAcc += touchAcc > 0 ? -TOUCH_STEP_PX : TOUCH_STEP_PX;
-      }
     }
     capture.addEventListener('touchstart', onTouchStart, { passive: true });
     capture.addEventListener('touchmove', onTouchMove, { passive: true });
