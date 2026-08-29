@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>alritealready — prototype</title>
+<title>ALRITE ALREADY!</title>
 <link rel="preload" href="fonts/libre-franklin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/big-shoulders-display-300.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -71,6 +71,7 @@
 
   /* ---- mobile ---- */
   #m-about { top: 28px; right: 22px; font-size: 15px; }
+  #m-refresh { top: 28px; left: 22px; font-size: 15px; }
   .m-letter { font-family: 'Libre Franklin', sans-serif; font-weight: 900; text-align: center; }
 </style>
 </head>
@@ -155,6 +156,13 @@
 
 <div id="mobile">
   <div id="m-about" class="about" style="pointer-events:auto;cursor:pointer;z-index:20;">About</div>
+  <div id="m-refresh" class="about" style="pointer-events:auto;cursor:pointer;z-index:20;" onclick="location.reload()">
+    <svg viewBox="0 0 24 24" style="width:18px;height:18px;display:block;" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+      <polyline points="23 4 23 10 17 10"></polyline>
+      <polyline points="1 20 1 14 7 14"></polyline>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+    </svg>
+  </div>
   <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;">
     <div id="m-prefix-window" style="position:relative;overflow:hidden;">
       <div id="m-prefix-a" style="position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;"></div>
@@ -1027,7 +1035,7 @@
     }, { passive: false });
 
     var touchStartY = null;
-    var TOUCH_PX_PER_UNIT = 220; // px of vertical swipe == one full word transition
+    var TOUCH_PX_PER_UNIT = 280; // px of vertical swipe == one full word transition
     function onTouchStart(e) {
       touchStartY = e.touches[0].clientY;
     }
